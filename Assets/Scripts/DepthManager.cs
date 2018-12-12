@@ -2,8 +2,9 @@
 using UnityEngine;
 using System.Collections;
 using Windows.Kinect;
+using static Utils;
 
-public class InfraredSourceManager : MonoBehaviour
+public class DepthManager : MonoBehaviour
 {
     private KinectSensor _Sensor;
     private DepthFrameReader _Reader;
@@ -23,53 +24,14 @@ public class InfraredSourceManager : MonoBehaviour
 
     void Start()
     {
-        _Sensor = KinectSensor.GetDefault();
-        if (_Sensor != null)
-        {
-            _Reader = _Sensor.DepthFrameSource.OpenReader();
-            var frameDesc = _Sensor.DepthFrameSource.FrameDescription;
-            _Data = new ushort[frameDesc.LengthInPixels];
-            _RawData = new byte[frameDesc.LengthInPixels * 4];
-            _Texture = new Texture2D(frameDesc.Width, frameDesc.Height, TextureFormat.BGRA32, false);
-            
-            UpdateLimits();
-
-
-            if (!_Sensor.IsOpen)
-            {
-                _Sensor.Open();
-            }
-        }
+        InitiateSensor();
     }
 
     void Update()
     {
-        if (_Reader != null)
-        {
-            var frame = _Reader.AcquireLatestFrame();
-            //Debug.Log(frame != null);
-            if (frame != null)
-            {
-                frame.CopyFrameDataToArray(_Data);
-
-                int index = 0;
-                foreach (var ir in _Data)
-                {
-                    byte intensity = (byte) Remap(minDist, maxDist, 255, 0, ir);
-                    _RawData[index++] = intensity;
-                    _RawData[index++] = intensity;
-                    _RawData[index++] = intensity;
-                    _RawData[index++] = 255; // Alpha
-                }
-
-                _Texture.LoadRawTextureData(_RawData);
-                _Texture.Apply();
-
-                frame.Dispose();
-                frame = null;
-            }
-        }
+        UpdateDepthTexture();
     }
+
 
     void OnApplicationQuit()
     {
@@ -90,14 +52,61 @@ public class InfraredSourceManager : MonoBehaviour
         }
     }
 
-    public static ushort Remap(ushort minOld, ushort maxOld, ushort minNew, ushort maxNew, ushort value)
-    {
-        return (ushort)(minNew + (value - minOld) * (maxNew - minNew) / (maxOld - minOld));
-    }
-
     public void UpdateLimits()
     {
         minDist = _Sensor.DepthFrameSource.DepthMinReliableDistance;
         maxDist = _Sensor.DepthFrameSource.DepthMaxReliableDistance;
     }
+
+    public void InitiateSensor()
+    {
+        _Sensor = KinectSensor.GetDefault();
+
+        if (_Sensor != null)
+        {
+            _Reader = _Sensor.DepthFrameSource.OpenReader();
+            var frameDesc = _Sensor.DepthFrameSource.FrameDescription;
+            _Data = new ushort[frameDesc.LengthInPixels];
+            _RawData = new byte[frameDesc.LengthInPixels * 4];
+            _Texture = new Texture2D(frameDesc.Width, frameDesc.Height, TextureFormat.BGRA32, false);
+
+            UpdateLimits();
+
+
+            if (!_Sensor.IsOpen)
+            {
+                _Sensor.Open();
+            }
+        }
+    }
+
+    public void UpdateDepthTexture()
+    {
+        if (_Reader != null)
+        {
+            var frame = _Reader.AcquireLatestFrame();
+            //Debug.Log(frame != null);
+            if (frame != null)
+            {
+                frame.CopyFrameDataToArray(_Data);
+
+                int index = 0;
+                foreach (var ir in _Data)
+                {
+                    byte intensity = (byte)Remap(minDist, maxDist, 255, 0, ir);
+                    _RawData[index++] = intensity;
+                    _RawData[index++] = intensity;
+                    _RawData[index++] = intensity;
+                    _RawData[index++] = 255; // Alpha
+                }
+
+                _Texture.LoadRawTextureData(_RawData);
+                _Texture.Apply();
+
+                frame.Dispose();
+                frame = null;
+            }
+        }
+    }
+
 }
