@@ -4,7 +4,7 @@ using System.Collections;
 public class InfraredSourceView : MonoBehaviour 
 {
     public GameObject InfraredSourceManager;
-    private InfraredSourceManager _InfraredManager;
+    private DepthManager _InfraredManager;
     
     void Start () 
     {
@@ -18,7 +18,7 @@ public class InfraredSourceView : MonoBehaviour
             return;
         }
         
-        _InfraredManager = InfraredSourceManager.GetComponent<InfraredSourceManager>();
+        _InfraredManager = InfraredSourceManager.GetComponent<DepthManager>();
         if (_InfraredManager == null)
         {
             return;

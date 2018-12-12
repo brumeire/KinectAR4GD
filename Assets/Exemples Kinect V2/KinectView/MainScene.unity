@@ -693,6 +693,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1464340102}
   - component: {fileID: 1464340101}
+  - component: {fileID: 1464340103}
   m_Layer: 0
   m_Name: InfraredManager
   m_TagString: Untagged
@@ -706,7 +707,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1464340100}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 63eff7f54e54aa049a2331755f3cb99c, type: 3}
   m_Name: 
@@ -724,6 +725,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1464340103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1464340100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dac884dd5f0e244f841182183ae2ca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minDist: 0
+  maxDist: 0
+  camWidth: 0
+  camHeight: 0
+  backgroundDepth: 0
+  debugCam: 1
 --- !u!1 &1608503454
 GameObject:
   m_ObjectHideFlags: 0
@@ -817,7 +835,7 @@ Transform:
   m_GameObject: {fileID: 1608503454}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.9, y: 2.1, z: 150.01746}
-  m_LocalScale: {x: 215.17749, y: 178.19386, z: 2.2414322}
+  m_LocalScale: {x: 211.57376, y: 175.20952, z: 0.92622703}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
