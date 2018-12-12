@@ -32,7 +32,7 @@ public class InfraredSourceManager : MonoBehaviour
             _RawData = new byte[frameDesc.LengthInPixels * 4];
             _Texture = new Texture2D(frameDesc.Width, frameDesc.Height, TextureFormat.BGRA32, false);
             
-            InvokeRepeating("UpdateLimits", 0, 5);
+            UpdateLimits();
 
             if (!_Sensor.IsOpen)
             {
@@ -98,7 +98,5 @@ public class InfraredSourceManager : MonoBehaviour
     {
         minDist = _Sensor.DepthFrameSource.DepthMinReliableDistance;
         maxDist = _Sensor.DepthFrameSource.DepthMaxReliableDistance;
-        Debug.Log(minDist);
-        Debug.Log(maxDist);
     }
 }
