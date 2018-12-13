@@ -11,19 +11,22 @@ public class GetPixelOfAnImage : MonoBehaviour {
     Texture2D MyCharacter;
     int TextureHeigth;
     int TextureWidth;
+    public GameObject MyParent;
+    GameObject[] Child;
 
     Color[] colors;
     
 
     // Use this for initialization
     void Start () {
+        
         TextureHeigth = MyTexture.height;
         TextureWidth = MyTexture.width;
         MyNewTexture = new Texture2D(TextureWidth, TextureHeigth, MyTexture.format, false);
         MyCharacter = new Texture2D(TextureWidth, TextureHeigth, MyTexture.format, false);
         MyNewTexture.filterMode = FilterMode.Point; 
         print("Taille Image : " + TextureHeigth + " " + TextureWidth);
-        GetPixelColor();
+        MakeAPooling();
         Color[] BaseAvatarPosition = MyTexture.GetPixels();
         //Instantiate(Image, GameObject.Find("Canvas").gameObject, false);
     }
@@ -38,6 +41,22 @@ public class GetPixelOfAnImage : MonoBehaviour {
         //PositionAvatar();
     }
 
+    void MakeAPooling()
+    {
+        colors = MyTexture.GetPixels();
+        Child = new GameObject[colors.Length];
+        for (int i =0; i<colors.Length; i++)
+        {
+            int Colonne = (int)i / MyTexture.width;
+            GameObject MygameObject = Instantiate(HitBox, new Vector3(-31.5f + (i % MyTexture.width) * 0.125f, -26.5f + (Colonne) * 0.125f, 0), new Quaternion(0, 0, 0, 0), MyParent.transform);
+            MygameObject.name = (i % MyTexture.width) + " " + (Colonne);
+            Child[i] = MygameObject.gameObject;
+        }
+
+        GetPixelColor();
+    }
+
+
     void GetPixelColor()
     {
         colors = MyTexture.GetPixels();
@@ -46,18 +65,13 @@ public class GetPixelOfAnImage : MonoBehaviour {
         for (int i = 0; i < colors.Length; i++)
         {
             Color MyColor = colors[i];
-            if (MyColor.grayscale > 0.9F)
+            if (MyColor.grayscale < 0.9F)
             {
-                colors[i] = Color.white;
+                Child[i].SetActive(false);
             }
             else
             {
-                colors[i] = Color.black;
-                int Colonne = (int) i / MyTexture.width;
-                //print(Colonne);
-                
-                GameObject MyNewObject = Instantiate(HitBox, new Vector3(-31.5f + (i % MyTexture.width)*0.125f, -26.5f + (Colonne) * 0.125f, 0), new Quaternion(0, 0, 0, 0));
-                MyNewObject.name = (i % MyTexture.width) + " " + (Colonne);
+                Child[i].SetActive(true);
             }
         }
         
